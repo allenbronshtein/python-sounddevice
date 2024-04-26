@@ -312,6 +312,10 @@ typedef struct PaWasapiStreamInfo
 PaError PaWasapi_UpdateDeviceList();
 
 int PaWasapi_IsLoopback( PaDeviceIndex device );
+
+PaError PaAsio_GetInputChannelName( PaDeviceIndex device,
+                        int channelIndex,
+                        const char ** channelName );
 """)
 
 if __name__ == '__main__':

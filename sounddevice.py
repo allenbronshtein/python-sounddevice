@@ -74,7 +74,7 @@ except OSError:
     if _platform.system() == 'Darwin':
         _libname = 'libportaudio.dylib'
     elif _platform.system() == 'Windows':
-        _libname = 'libportaudio' + _platform.architecture()[0] + '.dll'
+        _libname = 'libportaudio' + _platform.architecture()[0] + '-asio.dll' #Added for Dynamic VAxS
     else:
         raise
     import _sounddevice_data
@@ -719,6 +719,12 @@ def get_portaudio_version():
 
     """
     return _lib.Pa_GetVersion(), _ffi.string(_lib.Pa_GetVersionText()).decode()
+
+
+def asio_get_input_channel_name(device_i, channel_i): #Added for Dynamic VAxS
+    channel_name = _ffi.new('char*[1]')
+    _check(_lib.PaAsio_GetInputChannelName(device_i, channel_i, channel_name))
+    return _ffi.string(channel_name[0]).decode()
 
 
 class _StreamBase:

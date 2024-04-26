@@ -22,7 +22,7 @@ architecture0 = os.environ.get('PYTHON_SOUNDDEVICE_ARCHITECTURE',
 if system == 'Darwin':
     libname = 'libportaudio.dylib'
 elif system == 'Windows':
-    libname = 'libportaudio' + architecture0 + '.dll'
+    libname = 'libportaudio' + architecture0 + '-asio.dll'
 else:
     libname = None
 
