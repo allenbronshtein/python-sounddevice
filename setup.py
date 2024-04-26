@@ -63,7 +63,7 @@ else:
 setup(
     name='sounddevice',
     version="0.4.6",
-    revision="dvaxs0",
+    revision="DAVxS0",
     py_modules=['sounddevice'],
     packages=packages,
     package_data=package_data,
