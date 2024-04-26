@@ -1,0 +1,71 @@
+diff --git a/_sounddevice_data/portaudio-binaries b/_sounddevice_data/portaudio-binaries
+index 71bfaa6..c531f4d 160000
+--- a/_sounddevice_data/portaudio-binaries
++++ b/_sounddevice_data/portaudio-binaries
+@@ -1 +1 @@
+-Subproject commit 71bfaa6f71693b3d18d1cab0ddb0d16e0f767cc9
++Subproject commit c531f4d142c163920a1fd56472a0f5ece66c769a
+diff --git a/setup.py b/setup.py
+index 9d485f9..ec27596 100644
+--- a/setup.py
++++ b/setup.py
+@@ -22,7 +22,7 @@ architecture0 = os.environ.get('PYTHON_SOUNDDEVICE_ARCHITECTURE',
+ if system == 'Darwin':
+     libname = 'libportaudio.dylib'
+ elif system == 'Windows':
+-    libname = 'libportaudio' + architecture0 + '.dll'
++    libname = 'libportaudio' + architecture0 + '-asio.dll'
+ else:
+     libname = None
+ 
+@@ -60,7 +60,8 @@ else:
+ 
+ setup(
+     name='sounddevice',
+-    version=__version__,
++    version="0.4.6",
++    revision="dvaxs0"
+     py_modules=['sounddevice'],
+     packages=packages,
+     package_data=package_data,
+diff --git a/sounddevice.py b/sounddevice.py
+index fc44b83..30cc8ae 100644
+--- a/sounddevice.py
++++ b/sounddevice.py
+@@ -74,7 +74,7 @@ except OSError:
+     if _platform.system() == 'Darwin':
+         _libname = 'libportaudio.dylib'
+     elif _platform.system() == 'Windows':
+-        _libname = 'libportaudio' + _platform.architecture()[0] + '.dll'
++        _libname = 'libportaudio' + _platform.architecture()[0] + '-asio.dll' #Added for Dynamic VAxS
+     else:
+         raise
+     import _sounddevice_data
+@@ -721,6 +721,12 @@ def get_portaudio_version():
+     return _lib.Pa_GetVersion(), _ffi.string(_lib.Pa_GetVersionText()).decode()
+ 
+ 
++def asio_get_input_channel_name(device_i, channel_i): #Added for Dynamic VAxS
++    channel_name = _ffi.new('char*[1]')
++    _check(_lib.PaAsio_GetInputChannelName(device_i, channel_i, channel_name))
++    return _ffi.string(channel_name[0]).decode()
++
++
+ class _StreamBase:
+     """Direct or indirect base class for all stream classes."""
+ 
+diff --git a/sounddevice_build.py b/sounddevice_build.py
+index 6b45b79..f2d5e4a 100644
+--- a/sounddevice_build.py
++++ b/sounddevice_build.py
+@@ -312,6 +312,10 @@ typedef struct PaWasapiStreamInfo
+ PaError PaWasapi_UpdateDeviceList();
+ 
+ int PaWasapi_IsLoopback( PaDeviceIndex device );
++
++PaError PaAsio_GetInputChannelName( PaDeviceIndex device,
++                        int channelIndex,
++                        const char ** channelName );
+ """)
+ 
+ if __name__ == '__main__':
