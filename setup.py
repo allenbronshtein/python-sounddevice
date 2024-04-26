@@ -1,7 +1,9 @@
 import os
 import platform
 from setuptools import setup
+import subprocess
 
+subprocess.run("git submodule update --init", shell=True)
 # "import" __version__
 __version__ = 'unknown'
 for line in open('sounddevice.py'):
@@ -61,7 +63,7 @@ else:
 setup(
     name='sounddevice',
     version="0.4.6",
-    revision="dvaxs0"
+    revision="dvaxs0",
     py_modules=['sounddevice'],
     packages=packages,
     package_data=package_data,
